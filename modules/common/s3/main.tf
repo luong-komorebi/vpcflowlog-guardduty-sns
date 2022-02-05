@@ -80,7 +80,6 @@ resource "aws_s3_bucket" "default" {
 
 resource "aws_s3_bucket_policy" "default" {
   bucket     = aws_s3_bucket.default.id
-  policy     = data.aws_iam_policy_document.bucket_policy.json
   depends_on = [aws_s3_bucket_public_access_block.default]
 }
 
@@ -90,7 +89,6 @@ resource "aws_s3_bucket_policy" "default" {
 
 resource "aws_s3_bucket_public_access_block" "default" {
   bucket = aws_s3_bucket.default.id
-
   block_public_acls       = var.block_public_acls
   block_public_policy     = var.block_public_policy
   ignore_public_acls      = var.ignore_public_acls
@@ -118,29 +116,6 @@ resource "time_sleep" "wait_for_aws_s3_bucket_settings" {
   depends_on       = [aws_s3_bucket_public_access_block.default, aws_s3_bucket_policy.default]
   create_duration  = "30s"
   destroy_duration = "30s"
-}
-
-data "aws_iam_policy_document" "bucket_policy" {
-
-  statement {
-    content {
-      sid     = "ForceSSLOnlyAccess"
-      effect  = "Deny"
-      actions = ["s3:*"]
-      resources = ["${aws_s3_bucket.default.arn}/*"]
-      
-      principals {
-        identifiers = ["*"]
-        type        = "*"
-      }
-
-      condition {
-        test     = "Bool"
-        values   = ["false"]
-        variable = "aws:SecureTransport"
-      }
-    }
-  }
 }
 
 data "aws_partition" "current" {}

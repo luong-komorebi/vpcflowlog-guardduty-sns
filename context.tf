@@ -1,5 +1,5 @@
 module "this" {
-  source  = "./common/modules/terraform-null-label"
+  source  = "./modules/common/terraform-null-label"
   enabled             = var.enabled
   namespace           = var.namespace
   tenant              = var.tenant
@@ -21,7 +21,7 @@ module "this" {
   context = var.context
 }
 
-# Copy contents of cloudposse/terraform-null-label/variables.tf here
+# Copy contents of  here
 
 variable "context" {
   type = any

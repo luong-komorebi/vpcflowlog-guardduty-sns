@@ -78,12 +78,16 @@ resource "aws_s3_bucket" "default" {
 }
 
 data "aws_iam_policy_document" "bucket_policy" {
-   statement {
+  count = module.this.enabled ? 1 : 0
+
+  dynamic "statement" {
+    for_each = var.allow_encrypted_uploads_only ? [1] : []
+
     content {
       sid       = "DenyIncorrectEncryptionHeader"
       effect    = "Deny"
       actions   = ["s3:PutObject"]
-      resources = ["${aws_s3_bucket.default.arn}/*"]
+      resources = ["${join("", aws_s3_bucket.default.[count.index].arn)}/*"]
 
       principals {
         identifiers = ["*"]
@@ -98,12 +102,14 @@ data "aws_iam_policy_document" "bucket_policy" {
     }
   }
 
-  statement {
+  dynamic "statement" {
+    for_each = var.allow_encrypted_uploads_only ? [1] : []
+
     content {
       sid       = "DenyUnEncryptedObjectUploads"
       effect    = "Deny"
       actions   = ["s3:PutObject"]
-      resources = ["${aws_s3_bucket.default.arn}/*"]
+      resources = ["${join("", aws_s3_bucket.default.[count.index].arn)}/*"]
 
       principals {
         identifiers = ["*"]
@@ -118,16 +124,18 @@ data "aws_iam_policy_document" "bucket_policy" {
     }
   }
 
-  statement {
+  dynamic "statement" {
+    for_each = var.allow_ssl_requests_only ? [1] : []
+
     content {
       sid     = "ForceSSLOnlyAccess"
       effect  = "Deny"
       actions = ["s3:*"]
       resources = [
-        "${aws_s3_bucket.default.arn}",
-        "${aws_s3_bucket.default.arn}/*"
+        "${join("", aws_s3_bucket.default.[count.index].arn)}",
+        "${join("", aws_s3_bucket.default.[count.index].arn)}/*"
       ]
-      
+
       principals {
         identifiers = ["*"]
         type        = "*"

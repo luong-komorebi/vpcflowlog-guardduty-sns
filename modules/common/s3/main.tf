@@ -87,7 +87,7 @@ data "aws_iam_policy_document" "bucket_policy" {
       sid       = "DenyIncorrectEncryptionHeader"
       effect    = "Deny"
       actions   = ["s3:PutObject"]
-      resources = "${aws_s3_bucket.default.arn}/*"
+      resources = "${aws_s3_bucket.default[count.index].arn}/*"
 
       principals {
         identifiers = ["*"]
@@ -109,7 +109,7 @@ data "aws_iam_policy_document" "bucket_policy" {
       sid       = "DenyUnEncryptedObjectUploads"
       effect    = "Deny"
       actions   = ["s3:PutObject"]
-      resources = "${aws_s3_bucket.default.arn}/*"
+      resources = "${aws_s3_bucket.default[count.index].arn}/*"
 
       principals {
         identifiers = ["*"]
@@ -132,8 +132,8 @@ data "aws_iam_policy_document" "bucket_policy" {
       effect  = "Deny"
       actions = ["s3:*"]
       resources = [
-        "${aws_s3_bucket.default.arn}",
-        "${aws_s3_bucket.default.arn}/*"
+        "${aws_s3_bucket.default[count.index].arn}",
+        "${aws_s3_bucket.default[count.index].arn}/*"
       ]
 
 

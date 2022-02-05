@@ -88,7 +88,7 @@ data "aws_iam_policy_document" "bucket_policy" {
       sid       = "DenyIncorrectEncryptionHeader"
       effect    = "Deny"
       actions   = ["s3:PutObject"]
-      resources = ["arn:${data.aws_partition.current.partition}:s3:::${join("", aws_s3_bucket.default.*.id)}/*"]
+      resources = ["arn:aws:s3:::terraform-20220205223158702000000001/*"]
 
       principals {
         identifiers = ["*"]
@@ -110,7 +110,7 @@ data "aws_iam_policy_document" "bucket_policy" {
       sid       = "DenyUnEncryptedObjectUploads"
       effect    = "Deny"
       actions   = ["s3:PutObject"]
-      resources = ["arn:${data.aws_partition.current.partition}:s3:::${join("", aws_s3_bucket.default.*.id)}/*"]
+      resources = ["arn:aws:s3:::terraform-20220205223158702000000001/*"]
 
       principals {
         identifiers = ["*"]
@@ -133,8 +133,8 @@ data "aws_iam_policy_document" "bucket_policy" {
       effect  = "Deny"
       actions = ["s3:*"]
       resources = [
-        "arn:${data.aws_partition.current.partition}:s3:::${join("", aws_s3_bucket.default.*.id)}",
-        "arn:${data.aws_partition.current.partition}:s3:::${join("", aws_s3_bucket.default.*.id)}/*"
+        "arn:aws:s3:::terraform-20220205223158702000000001",
+        "arn:aws:s3:::terraform-20220205223158702000000001/*"
       ]
 
       principals {

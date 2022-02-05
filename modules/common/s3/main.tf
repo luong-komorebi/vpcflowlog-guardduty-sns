@@ -132,7 +132,8 @@ data "aws_iam_policy_document" "bucket_policy" {
       effect  = "Deny"
       actions = ["s3:*"]
       resources = [
-        "arn:${data.aws_partition.current.partition}:s3:::${join("", aws_s3_bucket.default.*.id)}"
+        "${module.s3.bucket_arn}",
+        "${module.s3.bucket_arn}"/*"
       ]
 
 

@@ -78,6 +78,7 @@ resource "aws_s3_bucket" "default" {
 }
 
 resource "aws_s3_bucket_policy" "default" {
+  policy     = data.aws_iam_policy_document.bucket.json
   bucket     = aws_s3_bucket.default.id
   depends_on = [aws_s3_bucket_public_access_block.default]
 }

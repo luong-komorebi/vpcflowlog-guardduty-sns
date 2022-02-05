@@ -11,8 +11,11 @@ resource "aws_kms_key" "default" {
   multi_region             = var.multi_region
 }
 
+# Need to manual update key alias each time, need to update to variable .... 
+
 resource "aws_kms_alias" "default" {
   count         = module.this.enabled ? 1 : 0
-  name          = coalesce(var.alias, format("alias/%v", "gd-kms-us-east-1"))
+  name          = coalesce(var.alias, format("alias/%v", "gd-kms-us-east-1-2"))
   target_key_id = join("", aws_kms_key.default.*.id)
 }
+

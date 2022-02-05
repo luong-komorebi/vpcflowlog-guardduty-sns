@@ -73,7 +73,6 @@ data "aws_iam_policy_document" "kms" {
 # https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs-s3.html
 
 data "aws_iam_policy_document" "bucket" {
-  count = module.this.enabled ? 1 : 0
 
   statement {
     sid = "AWSLogDeliveryWrite"
@@ -118,9 +117,7 @@ data "aws_iam_policy_document" "bucket" {
     ]
   }
 
-  dynamic "statement" {
-    for_each = var.allow_ssl_requests_only ? [1] : []
-
+   statement {
     content {
       sid     = "ForceSSLOnlyAccess"
       effect  = "Deny"

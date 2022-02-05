@@ -1,6 +1,5 @@
 module "this" {
-  source  = "../../context.tf"
-  version = "0.25.0" # requires Terraform >= 0.13.0
+  source  = "../terraform-null-label"
 
   enabled             = var.enabled
   namespace           = var.namespace

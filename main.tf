@@ -146,8 +146,6 @@ data "aws_iam_policy_document" "bucket" {
 
 module "kms_key" {
   source  = "./modules/common/kms"
-  version = "0.12.1"
-
   description             = "KMS key for VPC Flow Logs"
   deletion_window_in_days = 10
   enable_key_rotation     = true
@@ -158,8 +156,6 @@ module "kms_key" {
 
 module "s3_log_storage_bucket" {
   source  = "./modules/common/s3"
-  version = "0.26.0"
-
   kms_master_key_arn                 = module.kms_key.alias_arn
   sse_algorithm                      = "aws:kms"
   versioning_enabled                 = false

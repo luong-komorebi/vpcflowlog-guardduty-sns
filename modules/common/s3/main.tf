@@ -1,5 +1,7 @@
-
 resource "aws_s3_bucket" "default" {
+  #bridgecrew:skip=BC_AWS_S3_13:Skipping `Enable S3 Bucket Logging` check until bridgecrew will support dynamic blocks (https://github.com/bridgecrewio/checkov/issues/776).
+  #bridgecrew:skip=CKV_AWS_52:Skipping `Ensure S3 bucket has MFA delete enabled` due to issue in terraform (https://github.com/hashicorp/terraform-provider-aws/issues/629).
+  count         = module.this.enabled ? 1 : 0
   bucket        = module.this.id
   acl           = var.acl
   force_destroy = var.force_destroy
@@ -64,7 +66,6 @@ resource "aws_s3_bucket" "default" {
 
   # https://docs.aws.amazon.com/AmazonS3/latest/dev/bucket-encryption.html
   # https://www.terraform.io/docs/providers/aws/r/s3_bucket.html#enable-default-server-side-encryption
-
   server_side_encryption_configuration {
     rule {
       apply_server_side_encryption_by_default {
@@ -77,18 +78,101 @@ resource "aws_s3_bucket" "default" {
   tags = module.this.tags
 }
 
+data "aws_iam_policy_document" "bucket_policy" {
+  count = module.this.enabled ? 1 : 0
+
+  dynamic "statement" {
+    for_each = var.allow_encrypted_uploads_only ? [1] : []
+
+    content {
+      sid       = "DenyIncorrectEncryptionHeader"
+      effect    = "Deny"
+      actions   = ["s3:PutObject"]
+      resources = ["arn:${data.aws_partition.current.partition}:s3:::${join("", aws_s3_bucket.default.*.id)}/*"]
+
+      principals {
+        identifiers = ["*"]
+        type        = "*"
+      }
+
+      condition {
+        test     = "StringNotEquals"
+        values   = [var.sse_algorithm]
+        variable = "s3:x-amz-server-side-encryption"
+      }
+    }
+  }
+
+  dynamic "statement" {
+    for_each = var.allow_encrypted_uploads_only ? [1] : []
+
+    content {
+      sid       = "DenyUnEncryptedObjectUploads"
+      effect    = "Deny"
+      actions   = ["s3:PutObject"]
+      resources = ["arn:${data.aws_partition.current.partition}:s3:::${join("", aws_s3_bucket.default.*.id)}/*"]
+
+      principals {
+        identifiers = ["*"]
+        type        = "*"
+      }
+
+      condition {
+        test     = "Null"
+        values   = ["true"]
+        variable = "s3:x-amz-server-side-encryption"
+      }
+    }
+  }
+
+  dynamic "statement" {
+    for_each = var.allow_ssl_requests_only ? [1] : []
+
+    content {
+      sid     = "ForceSSLOnlyAccess"
+      effect  = "Deny"
+      actions = ["s3:*"]
+      resources = [
+        "arn:${data.aws_partition.current.partition}:s3:::${join("", aws_s3_bucket.default.*.id)}",
+        "arn:${data.aws_partition.current.partition}:s3:::${join("", aws_s3_bucket.default.*.id)}/*"
+      ]
+
+      principals {
+        identifiers = ["*"]
+        type        = "*"
+      }
+
+      condition {
+        test     = "Bool"
+        values   = ["false"]
+        variable = "aws:SecureTransport"
+      }
+    }
+  }
+}
+
+data "aws_partition" "current" {}
+
+data "aws_iam_policy_document" "aggregated_policy" {
+  count         = module.this.enabled ? 1 : 0
+  source_json   = var.policy
+  override_json = join("", data.aws_iam_policy_document.bucket_policy.*.json)
+}
+
 resource "aws_s3_bucket_policy" "default" {
-  policy     = data.aws_iam_policy_document.bucket.json
-  bucket     = aws_s3_bucket.default.id
+  count      = module.this.enabled && (var.allow_ssl_requests_only || var.allow_encrypted_uploads_only || var.policy != "") ? 1 : 0
+  bucket     = join("", aws_s3_bucket.default.*.id)
+  policy     = join("", data.aws_iam_policy_document.aggregated_policy.*.json)
   depends_on = [aws_s3_bucket_public_access_block.default]
 }
 
 # Refer to the terraform documentation on s3_bucket_public_access_block at
 # https://www.terraform.io/docs/providers/aws/r/s3_bucket_public_access_block.html
 # for the nuances of the blocking options
-
 resource "aws_s3_bucket_public_access_block" "default" {
-  bucket = aws_s3_bucket.default.id
+  count  = module.this.enabled ? 1 : 0
+  bucket = join("", aws_s3_bucket.default.*.id)
+
   block_public_acls       = var.block_public_acls
   block_public_policy     = var.block_public_policy
   ignore_public_acls      = var.ignore_public_acls
@@ -99,10 +183,9 @@ resource "aws_s3_bucket_public_access_block" "default" {
 # It is safe to always set to BucketOwnerPreferred. The bucket owner will own the object 
 # if the object is uploaded with the bucket-owner-full-control canned ACL. Without 
 # this setting and canned ACL, the object is uploaded and remains owned by the uploading account.
-
-
 resource "aws_s3_bucket_ownership_controls" "default" {
-  bucket = aws_s3_bucket.default.id
+  count  = module.this.enabled ? 1 : 0
+  bucket = join("", aws_s3_bucket.default.*.id)
 
   rule {
     object_ownership = "BucketOwnerPreferred"
@@ -111,13 +194,9 @@ resource "aws_s3_bucket_ownership_controls" "default" {
 }
 
 # Workaround S3 eventual consistency for settings objects
-
 resource "time_sleep" "wait_for_aws_s3_bucket_settings" {
+  count            = module.this.enabled ? 1 : 0
   depends_on       = [aws_s3_bucket_public_access_block.default, aws_s3_bucket_policy.default]
   create_duration  = "30s"
   destroy_duration = "30s"
 }
-
-data "aws_partition" "current" {}
-
-

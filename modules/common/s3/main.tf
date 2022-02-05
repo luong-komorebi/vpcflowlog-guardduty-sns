@@ -133,7 +133,7 @@ data "aws_iam_policy_document" "bucket_policy" {
       actions = ["s3:*"]
       resources = [
         "${module.s3.bucket_arn}",
-        "${module.s3.bucket_arn}"/*"
+        "${module.s3.bucket_arn}/*"
       ]
 
 

@@ -118,7 +118,6 @@ data "aws_iam_policy_document" "bucket" {
   }
 
    statement {
-    content {
       sid     = "ForceSSLOnlyAccess"
       effect  = "Deny"
       actions = ["s3:*"]
@@ -137,7 +136,6 @@ data "aws_iam_policy_document" "bucket" {
         values   = ["false"]
         variable = "aws:SecureTransport"
       }
-    }
   }
 }
 

@@ -1,6 +1,8 @@
 resource "aws_s3_bucket" "default" {
+
   #bridgecrew:skip=BC_AWS_S3_13:Skipping `Enable S3 Bucket Logging` check until bridgecrew will support dynamic blocks (https://github.com/bridgecrewio/checkov/issues/776).
   #bridgecrew:skip=CKV_AWS_52:Skipping `Ensure S3 bucket has MFA delete enabled` due to issue in terraform (https://github.com/hashicorp/terraform-provider-aws/issues/629).
+  
   count         = module.this.enabled ? 1 : 0
   bucket        = module.this.id
   acl           = var.acl
@@ -88,7 +90,7 @@ data "aws_iam_policy_document" "bucket_policy" {
       sid       = "DenyIncorrectEncryptionHeader"
       effect    = "Deny"
       actions   = ["s3:PutObject"]
-      resources = ["arn:aws:s3:::terraform-20220205223158702000000001/*"]
+      resources = ["aws_s3_bucket.default.*.id/*"]
 
       principals {
         identifiers = ["*"]
@@ -110,7 +112,7 @@ data "aws_iam_policy_document" "bucket_policy" {
       sid       = "DenyUnEncryptedObjectUploads"
       effect    = "Deny"
       actions   = ["s3:PutObject"]
-      resources = ["arn:aws:s3:::terraform-20220205223158702000000001/*"]
+      resources = ["aws_s3_bucket.default.*.id/*"]
 
       principals {
         identifiers = ["*"]
@@ -132,10 +134,7 @@ data "aws_iam_policy_document" "bucket_policy" {
       sid     = "ForceSSLOnlyAccess"
       effect  = "Deny"
       actions = ["s3:*"]
-      resources = [
-        "arn:aws:s3:::terraform-20220205223158702000000001",
-        "arn:aws:s3:::terraform-20220205223158702000000001/*"
-      ]
+      resources = ["aws_s3_bucket.default.*.id/*"]
 
       principals {
         identifiers = ["*"]

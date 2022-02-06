@@ -108,6 +108,7 @@ module "s3_log_storage_bucket" {
   bucket_notifications_enabled       = var.bucket_notifications_enabled
   bucket_notifications_type          = var.bucket_notifications_type
   bucket_notifications_prefix        = var.bucket_notifications_prefix
+  key_alias_us                       = var.key_alias_us
 
   context = module.this.context
 }

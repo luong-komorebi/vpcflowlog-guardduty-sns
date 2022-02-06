@@ -104,7 +104,6 @@ variable "enable_cloudwatch" {
   Flag to indicate whether an CloudWatch logging should be enabled for GuardDuty
   DOC
   type        = bool
-  default     = yes
 }
 
 variable "cloudwatch_event_rule_pattern_detail_type" {
@@ -125,9 +124,7 @@ variable "create_sns_topic" {
   Flag to indicate whether an SNS topic should be created for notifications.
   If you want to send findings to a new SNS topic, set this to true and provide a valid configuration for subscribers.
   DOC
-
   type    = bool
-  default = yes
 }
 
 variable "subscribers" {

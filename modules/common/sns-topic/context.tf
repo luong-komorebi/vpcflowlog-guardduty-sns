@@ -9,7 +9,7 @@
 #
 
 module "this" {
-  source  = "./modules/common/terraform-null-label"
+  source  = "../terraform-null-label"
   
   enabled             = var.enabled
   namespace           = var.namespace
@@ -32,7 +32,7 @@ module "this" {
   context = var.context
 }
 
-# Copy contents of cloudposse/terraform-null-label/variables.tf here
+# Copy contents terraform-null-label/variables.tf here
 
 variable "context" {
   type = any

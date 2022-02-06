@@ -1,15 +1,3 @@
-#
-# ONLY EDIT THIS FILE IN github.com/cloudposse/terraform-null-label
-# All other instances of this file should be a copy of that one
-#
-#
-# Copy this file from https://github.com/cloudposse/terraform-null-label/blob/master/exports/context.tf
-# and then place it in your Terraform module to automatically get
-# Cloud Posse's standard configuration inputs suitable for passing
-# to Cloud Posse modules.
-#
-# curl -sL https://raw.githubusercontent.com/cloudposse/terraform-null-label/master/exports/context.tf -o context.tf
-#
 # Modules should access the whole context as `module.this.context`
 # to get the input variables with nulls for defaults,
 # for example `context = module.this.context`,
@@ -274,5 +262,3 @@ variable "descriptor_formats" {
     Default is `{}` (`descriptors` output will be empty).
     EOT
 }
-
-#### End of copy of cloudposse/terraform-null-label/variables.tf

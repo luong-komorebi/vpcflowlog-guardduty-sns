@@ -161,7 +161,6 @@ variable "subscribers" {
     }
   }
 }
-}
 
 variable "findings_notification_arn" {
   description = <<-DOC

@@ -155,13 +155,13 @@ data "aws_partition" "current" {}
 data "aws_iam_policy_document" "aggregated_policy" {
   count         = module.this.enabled ? 1 : 0
   source_json   = var.policy
-  override_json = join("", data.aws_iam_policy_document.bucket_policy.*.json)
+  override_json = data.aws_iam_policy_document.bucket_policy[0].json
 }
 
 resource "aws_s3_bucket_policy" "default" {
   count      = module.this.enabled && (var.allow_ssl_requests_only || var.allow_encrypted_uploads_only || var.policy != "") ? 1 : 0
-  bucket     = join("", aws_s3_bucket.default.*.id)
-  policy     = join("", data.aws_iam_policy_document.aggregated_policy.*.json)
+  bucket     = aws_s3_bucket.default[0].id
+  policy     = data.aws_iam_policy_document.aggregated_policy[0].json
   depends_on = [aws_s3_bucket_public_access_block.default]
 }
 

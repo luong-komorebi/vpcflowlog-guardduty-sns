@@ -82,49 +82,49 @@ resource "aws_s3_bucket" "default" {
 
 data "aws_iam_policy_document" "bucket_policy" {
   count = module.this.enabled ? 1 : 0
+  
 
-  dynamic "statement" {
-    for_each = var.allow_encrypted_uploads_only ? [1] : []
+  statement {
+    sid = "AWSLogDeliveryWrite"
 
-    content {
-      sid       = "DenyIncorrectEncryptionHeader"
-      effect    = "Deny"
-      actions   = ["s3:PutObject"]
-      resources = ["${aws_s3_bucket.default[0].arn}/*"]
+    principals {
+      type        = "Service"
+      identifiers = ["delivery.logs.amazonaws.com"]
+    }
 
-      principals {
-        identifiers = ["*"]
-        type        = "*"
-      }
+    actions = [
+      "s3:PutObject"
+    ]
 
-      condition {
-        test     = "StringNotEquals"
-        values   = [var.sse_algorithm]
-        variable = "s3:x-amz-server-side-encryption"
-      }
+    resources = [
+      "${aws_s3_bucket.default[0].arn}/*"
+    ]
+
+    condition {
+      test     = "StringEquals"
+      variable = "s3:x-amz-acl"
+
+      values = [
+        "bucket-owner-full-control"
+      ]
     }
   }
 
-  dynamic "statement" {
-    for_each = var.allow_encrypted_uploads_only ? [1] : []
+  statement {
+    sid = "AWSLogDeliveryAclCheck"
 
-    content {
-      sid       = "DenyUnEncryptedObjectUploads"
-      effect    = "Deny"
-      actions   = ["s3:PutObject"]
-      resources = ["${aws_s3_bucket.default[0].arn}/*"]
-
-      principals {
-        identifiers = ["*"]
-        type        = "*"
-      }
-
-      condition {
-        test     = "Null"
-        values   = ["true"]
-        variable = "s3:x-amz-server-side-encryption"
-      }
+    principals {
+      type        = "Service"
+      identifiers = ["delivery.logs.amazonaws.com"]
     }
+
+    actions = [
+      "s3:GetBucketAcl"
+    ]
+
+    resources = [
+      "aws_s3_bucket.default[0].arn"
+    ]
   }
 
   dynamic "statement" {

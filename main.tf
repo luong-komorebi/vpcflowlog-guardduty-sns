@@ -70,74 +70,6 @@ data "aws_iam_policy_document" "kms" {
   }
 }
 
-# https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs-s3.html
-
-data "aws_iam_policy_document" "bucket" {
-
-  statement {
-    sid = "AWSLogDeliveryWrite"
-
-    principals {
-      type        = "Service"
-      identifiers = ["delivery.logs.amazonaws.com"]
-    }
-
-    actions = [
-      "s3:PutObject"
-    ]
-
-    resources = [
-      "${local.arn_format}:s3:::${module.this.id}/*"
-    ]
-
-    condition {
-      test     = "StringEquals"
-      variable = "s3:x-amz-acl"
-
-      values = [
-        "bucket-owner-full-control"
-      ]
-    }
-  }
-
-  statement {
-    sid = "AWSLogDeliveryAclCheck"
-
-    principals {
-      type        = "Service"
-      identifiers = ["delivery.logs.amazonaws.com"]
-    }
-
-    actions = [
-      "s3:GetBucketAcl"
-    ]
-
-    resources = [
-      "${local.arn_format}:s3:::${module.this.id}"
-    ]
-  }
-
-   statement {
-      sid     = "ForceSSLOnlyAccess"
-      effect  = "Deny"
-      actions = ["s3:*"]
-      resources = [
-        "${local.arn_format}:s3:::${module.this.id}/*"
-      ]
-
-      principals {
-        identifiers = ["*"]
-        type        = "*"
-      }
-
-      condition {
-        test     = "Bool"
-        values   = ["false"]
-        variable = "aws:SecureTransport"
-      }
-  }
-}
-
 module "kms_key" {
   source  = "./modules/common/kms"
   description             = "KMS key for VPC Flow Logs"
@@ -162,7 +94,6 @@ module "s3_log_storage_bucket" {
   noncurrent_version_transition_days = var.noncurrent_version_transition_days
   standard_transition_days           = var.standard_transition_days
   force_destroy                      = var.force_destroy
-  policy                             = data.aws_iam_policy_document.bucket.json
   bucket_notifications_enabled       = var.bucket_notifications_enabled
   bucket_notifications_type          = var.bucket_notifications_type
   bucket_notifications_prefix        = var.bucket_notifications_prefix

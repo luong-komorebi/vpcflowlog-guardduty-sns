@@ -160,6 +160,7 @@ variable "subscribers" {
       protocol = "email"
       endpoint = "txsandersfamily@gmail.com"
       raw_message_delivery = false
+      endpoint_auto_confirms = false
     }
   }
 }

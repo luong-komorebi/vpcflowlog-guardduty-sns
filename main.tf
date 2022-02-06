@@ -87,7 +87,7 @@ data "aws_iam_policy_document" "bucket" {
     ]
 
     resources = [
-      "${local.arn_format}:s3:::${module.this.id}/*"
+      "${module.this.arn}/*"
     ]
 
     condition {
@@ -113,7 +113,7 @@ data "aws_iam_policy_document" "bucket" {
     ]
 
     resources = [
-      "${local.arn_format}:s3:::${module.this.id}"
+      "${module.this.arn}"
     ]
   }
 
@@ -122,8 +122,8 @@ data "aws_iam_policy_document" "bucket" {
       effect  = "Deny"
       actions = ["s3:*"]
       resources = [
-        "${local.arn_format}:s3:::${module.this.id}/*",
-        "${local.arn_format}:s3:::${module.this.id}"
+        "${module.this.arn}/*",
+        "${module.this.arn}"
       ]
 
       principals {

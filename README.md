@@ -16,17 +16,17 @@ The code bahaves as follows
 The code is a refactored version of the upstream cloud posse source code under Apache 2.0 license. However, the code was refactored and modified as follows
 
 * Most importantly the previous code did not work correctly on Terraform v1.1.5
-* Due to the use of count and for each dynmaic code blocks, the old code concatinated ARN strings with name.*.id pattern
+* Due to the use of count and for each dynamic code blocks, the old code concatenated ARN strings with name.*.id pattern
 * In recent versions the use of .id is no longer needed in replace of ARN attribute
-* Additonally, the [0] index is passed with every name[0] in replace of name.*.id
-* The root main S3 bucket policies have been removed and pushed to modules s3 main.tf to cleanup root main.tf 
-* Some of the default bucket ACL policies have been removed, only enforced TLS and Public block is enabled 
-* SNS ACL access rules updated to accept eventbridge as a princaple service writing into topic  
-* The KMS key alias is not s user supplied input, previously a validation error was being thrown because of the use of name.*.id concatination 
+* Additionally, the [0] index is passed with every name[0] in replace of name.*.id
+* The root main S3 bucket policies have been removed and pushed to modules s3 main.tf to cleanup root main.tf
+* Some of the default bucket ACL policies have been removed, only enforced TLS and Public block is enabled
+* SNS ACL access rules updated to accept eventbridge as a principle service writing into topic
+* The KMS key alias is not s user supplied input, previously a validation error was being thrown because of the use of name.*.id concatenation
 * Enable SNS and Cloud Event is now user supplied input excepting bool: true:false
-* VPCid is now a user supplied input expecting the vpc-foobaripsum format 
-* All reference to external registries have been removed to prevent supply chain attack 
-* All source = /registry keys removed to support local paths and version references removed to support local path files 
+* VPCid is now a user supplied input expecting the vpc-foobaripsum format
+* All reference to external registries have been removed to prevent supply chain attack
+* All source = /registry keys removed to support local paths and version references removed to support local path files
 
 
 https://securitysandman.com/

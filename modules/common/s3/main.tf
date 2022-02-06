@@ -171,6 +171,8 @@ resource "aws_s3_bucket_policy" "default" {
 # Refer to the terraform documentation on s3_bucket_public_access_block at
 # https://www.terraform.io/docs/providers/aws/r/s3_bucket_public_access_block.html
 # for the nuances of the blocking options
+
+
 resource "aws_s3_bucket_public_access_block" "default" {
   count  = module.this.enabled ? 1 : 0
   bucket = aws_s3_bucket.default[0].id
@@ -185,9 +187,11 @@ resource "aws_s3_bucket_public_access_block" "default" {
 # It is safe to always set to BucketOwnerPreferred. The bucket owner will own the object 
 # if the object is uploaded with the bucket-owner-full-control canned ACL. Without 
 # this setting and canned ACL, the object is uploaded and remains owned by the uploading account.
+
+
 resource "aws_s3_bucket_ownership_controls" "default" {
   count  = module.this.enabled ? 1 : 0
-  bucket = join("", aws_s3_bucket.default.*.id)
+  bucket = aws_s3_bucket.default[0].id
 
   rule {
     object_ownership = "BucketOwnerPreferred"

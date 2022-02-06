@@ -31,7 +31,10 @@ The code is a refactored version of the upstream cloud posse source code under A
 
 https://securitysandman.com/
 
+## Bugs 
 
+* Currently, the SNS EMAIL endpoint resource is configured and works in standalone. However, a successful GuardDuty CloudWatch notification has not been tested successfully. Possibly the shif tto EventBridge causing an ACL permissions error here. need more time to generate events and trigger the SNS tests. 
+* 
 
 
 

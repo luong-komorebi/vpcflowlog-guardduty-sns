@@ -135,7 +135,8 @@ resource "aws_guardduty_detector" "guardduty" {
 }
 
 #-----------------------------------------------------------------------------------------------------------------------
-# Optionally configure Event Bridge Rules and SNS subscriptions
+# Event Bridge Rules and SNS subscriptions, by default uses EMAIL endpoint 
+# Currently there is an error here, possibly acccess control issue because events are not beint sent to SNS
 # https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-cwe-integration-types.html
 # https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/resource-based-policies-cwe.html#sns-permissions
 #-----------------------------------------------------------------------------------------------------------------------

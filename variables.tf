@@ -1,7 +1,9 @@
-variable "vpc_id" {
+variable "key_alias_us" {
   type        = string
-  description = "VPC ID to create flow logs for"
+  description = "A short unique key tio append to the auto generated key-alias"
 }
+
+
 
 variable "lifecycle_prefix" {
   type        = string

@@ -156,7 +156,7 @@ variable "subscribers" {
     Default is false
   DOC
   default     =   {
-      opsgenie = {
+      Email = {
       protocol = "email"
       endpoint = "txsandersfamily@gmail.com"
       raw_message_delivery = false

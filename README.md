@@ -13,7 +13,7 @@ The code bahaves as follows
 
 ## About the refactor  
 
-The code is a refactored version of the upstradm cloudposse sourc code under Apache 2.0 license. However, the code was refaatoted and modified 
+The code is a refactored version of the upstream cloud posse source code under Apache 2.0 license. However, the code was refactored and modified as follows
 
 * Most importantly the previous code did not work correctly on Terraform v1.1.5
 * Due to the use of count and for each dynmaic code blocks, the old code concatinated ARN strings with name.*.id pattern

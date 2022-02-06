@@ -162,7 +162,7 @@ data "aws_iam_policy_document" "aggregated_policy" {
 }
 
 resource "aws_s3_bucket_policy" "default" {
-  count      = module.this.enabled && (var.allow_ssl_requests_only || var.allow_encrypted_uploads_only || var.policy != "") ? 1 : 0
+  count      = module.this.enabled && (var.allow_encrypted_uploads_only || var.policy != "") ? 1 : 0
   bucket     = aws_s3_bucket.default[0].id
   policy     = data.aws_iam_policy_document.aggregated_policy[0].json
   depends_on = [aws_s3_bucket_public_access_block.default]
@@ -173,7 +173,7 @@ resource "aws_s3_bucket_policy" "default" {
 # for the nuances of the blocking options
 resource "aws_s3_bucket_public_access_block" "default" {
   count  = module.this.enabled ? 1 : 0
-  bucket = join("", aws_s3_bucket.default.*.id)
+  bucket = aws_s3_bucket.default[0].id
 
   block_public_acls       = var.block_public_acls
   block_public_policy     = var.block_public_policy

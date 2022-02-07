@@ -1,7 +1,3 @@
-variable "vpc_id" {
-  type        = string
-  description = "VPC ID to create flow logs for"
-}
 
 variable "key_alias_us" {
   type        = string

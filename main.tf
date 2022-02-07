@@ -87,6 +87,7 @@ module "kms_key" {
   deletion_window_in_days = 10
   enable_key_rotation     = true
   policy                  = join("", data.aws_iam_policy_document.kms.*.json)
+  key_alias_us            = var.key_alias_us
 
   context = module.this.context
 }
@@ -108,8 +109,6 @@ module "s3_log_storage_bucket" {
   bucket_notifications_enabled       = var.bucket_notifications_enabled
   bucket_notifications_type          = var.bucket_notifications_type
   bucket_notifications_prefix        = var.bucket_notifications_prefix
-  key_alias_us                       = var.key_alias_us
-
   context = module.this.context
 }
 

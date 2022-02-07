@@ -15,7 +15,7 @@ resource "aws_kms_key" "default" {
 
 resource "aws_kms_alias" "default" {
   count         = module.this.enabled ? 1 : 0
-  name          = coalesce(var.alias, format("alias/%v", "gd-kms-us-east-1-2"))
+  name          = coalesce(var.alias, format("alias/%v", var.key_alias_us"))
   target_key_id = join("", aws_kms_key.default.*.id)
 }
 

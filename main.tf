@@ -90,11 +90,6 @@ module "kms_key" {
   context = module.this.context
 }
 
-module "aws_kms_alias" {
-  source  = "./modules/common/kms"
-  key_alias_us            = var.key_alias_us
-}
-
 module "s3_log_storage_bucket" {
   source  = "./modules/common/s3"
   kms_master_key_arn                 = module.kms_key.alias_arn

@@ -1,8 +1,4 @@
 
-variable "key_alias_us" {
-  type        = string
-  description = "A key alias for the kms key used to ecnrypt the vpc flow logs bucket"
-}
 
 variable "vpc_id" {
   type        = string

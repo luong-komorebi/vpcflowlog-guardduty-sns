@@ -157,7 +157,7 @@ variable "subscribers" {
   default     =   {
       Email = {
       protocol = "email"
-      endpoint = "txsandersfamily@gmail.com"
+      endpoint = ""
       raw_message_delivery = false
       endpoint_auto_confirms = false
     }

@@ -120,7 +120,7 @@ variable "restrict_public_buckets" {
 
 variable "access_log_bucket_name" {
   type        = string
-  default     = ""
+  default     = null
   description = "Name of the S3 bucket where S3 access logs will be sent to"
 }
 
@@ -164,4 +164,19 @@ variable "bucket_notifications_prefix" {
   type        = string
   description = "Prefix filter. Used to manage object notifications"
   default     = ""
+}
+
+variable "grants" {
+  type = list(object({
+    id          = string
+    type        = string
+    permissions = list(string)
+    uri         = string
+  }))
+  default = []
+
+  description = <<-EOT
+    A list of policy grants for the bucket, taking a list of permissions.
+    Conflicts with `acl`. Set `acl` to `null` to use this.
+    EOT
 }

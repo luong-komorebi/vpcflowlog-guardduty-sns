@@ -20,10 +20,8 @@ data "aws_caller_identity" "current" {}
 #-----------------------------------------------------------------------------------------------------------------------
 
 data "aws_iam_policy_document" "kms" {
-  count = module.this.enabled ? 1 : 0
-
-  source_json = var.kms_policy_source_json
-
+  count                   = module.this.enabled ? 1 : 0
+  source_policy_documents = [var.kms_policy_source_json]
   statement {
     sid    = "Enable Root User Permissions"
     effect = "Allow"
@@ -204,8 +202,3 @@ resource "aws_cloudwatch_event_target" "imported_findings" {
   rule  = aws_cloudwatch_event_rule.findings[0].name
   arn   = local.findings_notification_arn
 }
-
-
-
-
-

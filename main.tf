@@ -4,7 +4,7 @@
 
 
 locals {
-  arn_format = "arn:${data.aws_partition.current.partition}"
+  arn_format                = "arn:${data.aws_partition.current.partition}"
   enable_cloudwatch         = module.this.enabled && (var.enable_cloudwatch || local.enable_notifications)
   enable_notifications      = module.this.enabled && (var.create_sns_topic || var.findings_notification_arn != null)
   create_sns_topic          = module.this.enabled && var.create_sns_topic
@@ -82,16 +82,17 @@ data "aws_iam_policy_document" "kms" {
 }
 
 module "kms_key" {
-  source  = "./modules/common/kms"
+  source                  = "./modules/common/kms"
   description             = "KMS key for VPC Flow Logs"
   deletion_window_in_days = 10
   enable_key_rotation     = true
   policy                  = join("", data.aws_iam_policy_document.kms.*.json)
-  context = module.this.context
+  context                 = module.this.context
+  alias                   = "alias/${var.vpc_id}-flow-logs"
 }
 
 module "s3_log_storage_bucket" {
-  source  = "./modules/common/s3"
+  source                             = "./modules/common/s3"
   kms_master_key_arn                 = module.kms_key.alias_arn
   sse_algorithm                      = "aws:kms"
   versioning_enabled                 = false
@@ -107,7 +108,7 @@ module "s3_log_storage_bucket" {
   bucket_notifications_enabled       = var.bucket_notifications_enabled
   bucket_notifications_type          = var.bucket_notifications_type
   bucket_notifications_prefix        = var.bucket_notifications_prefix
-  context = module.this.context
+  context                            = module.this.context
 }
 
 #-----------------------------------------------------------------------------------------------------------------------
@@ -141,8 +142,8 @@ resource "aws_guardduty_detector" "guardduty" {
 
 module "sns_topic" {
 
-  source  = "./modules/common/sns-topic"
-  count   = local.create_sns_topic ? 1 : 0
+  source = "./modules/common/sns-topic"
+  count  = local.create_sns_topic ? 1 : 0
 
   subscribers     = var.subscribers
   sqs_dlq_enabled = false
@@ -152,7 +153,7 @@ module "sns_topic" {
 }
 
 module "findings_label" {
-  source  = "./modules/common/terraform-null-label"
+  source     = "./modules/common/terraform-null-label"
   attributes = concat(module.this.attributes, ["guardduty", "findings"])
   context    = module.this.context
 }

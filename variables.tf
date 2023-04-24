@@ -126,7 +126,7 @@ variable "create_sns_topic" {
   Flag to indicate whether an SNS topic should be created for notifications.
   If you want to send findings to a new SNS topic, set this to true and provide a valid configuration for subscribers.
   DOC
-  type    = bool
+  type        = bool
 }
 
 variable "subscribers" {
@@ -154,11 +154,11 @@ variable "subscribers" {
     Boolean indicating whether or not to enable raw message delivery (the original message is directly passed, not wrapped in JSON with the original message in the message property).
     Default is false
   DOC
-  default     =   {
-      Email = {
-      protocol = "email"
-      endpoint = ""
-      raw_message_delivery = false
+  default = {
+    Email = {
+      protocol               = "email"
+      endpoint               = ""
+      raw_message_delivery   = false
       endpoint_auto_confirms = false
     }
   }

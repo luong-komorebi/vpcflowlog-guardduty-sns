@@ -9,8 +9,8 @@
 #
 
 module "this" {
-  source  = "../terraform-null-label"
-  
+  source = "../terraform-null-label"
+
   enabled             = var.enabled
   namespace           = var.namespace
   tenant              = var.tenant

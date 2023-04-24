@@ -1,5 +1,5 @@
 module "this" {
-  source  = "../terraform-null-label"
+  source              = "../terraform-null-label"
   enabled             = var.enabled
   namespace           = var.namespace
   tenant              = var.tenant
@@ -17,7 +17,7 @@ module "this" {
   label_value_case    = var.label_value_case
   descriptor_formats  = var.descriptor_formats
   labels_as_tags      = var.labels_as_tags
-  context = var.context
+  context             = var.context
 }
 
 # Copy contents of here

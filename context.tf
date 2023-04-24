@@ -1,5 +1,5 @@
 module "this" {
-  source  = "./modules/common/terraform-null-label"
+  source              = "./modules/common/terraform-null-label"
   enabled             = var.enabled
   namespace           = var.namespace
   tenant              = var.tenant

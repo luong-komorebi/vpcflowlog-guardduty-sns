@@ -21,6 +21,7 @@ resource "aws_s3_bucket" "default" {
   bucket        = module.this.id
   force_destroy = var.force_destroy
   policy        = var.policy
+  tags          = module.this.tags
 
   // MFA Enabled is not compatable with lifecycle management - https://docs.aws.amazon.com/AmazonS3/latest/userguide/lifecycle-and-other-bucket-config.html
   dynamic "lifecycle_rule" {
